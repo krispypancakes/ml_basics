@@ -38,7 +38,7 @@ n of columns, n of rows and n of images
 
 void loadImages(const char* filename, MNIST_DATASET *dataset) {
     FILE *file = fopen(filename, "rb");
-    if (file == NULL) {
+    if (!file) {
         printf("File is fukked.");
         exit(1);
     }
