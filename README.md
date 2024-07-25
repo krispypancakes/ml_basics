@@ -1,8 +1,10 @@
 # ml.c
-For fun / educational purposes and self-torture, I'm going to implement ML programs in C.
+For fun, educational purposes and self-torture, I'm going to implement simple ML stuff in C. 
+First is obviously MNIST. Let's see if I will continue afterwards.
+An idea would also be to switch to C++ add cuda support.
 
 ### Roadmap:
-- Mnist dataloader
+- Mnist dataloader - check
 - simple MLP nn architecture:
     - neurons, activations
     - forward pass
