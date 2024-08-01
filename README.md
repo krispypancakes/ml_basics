@@ -5,6 +5,7 @@ An idea would also be to switch to C++ add cuda support.
 
 ### Roadmap:
 - Mnist dataloader - check
+- start implementation in Python first (only numpy)
 - simple MLP nn architecture:
     - neurons, activations
     - forward pass
@@ -14,6 +15,3 @@ An idea would also be to switch to C++ add cuda support.
     - evaluation
 - Add Conv layers
 - Run on Arduino ?
-
-- [Facial recognition]
-    - deploy on Arduino
