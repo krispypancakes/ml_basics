@@ -4,18 +4,15 @@ import numpy as np
 
 
 def flatten(_imgs: np.ndarray) -> np.ndarray:
-    flattened = [img.flatten() for img in _imgs]
-    return np.asarray(flattened)
+    return _imgs.reshape(_imgs.shape[0], -1)
 
 
-def relu(x: float) -> float:
+def relu(x: np.ndarray) -> float:
     return np.maximum(0, x)
             
 
 def hidden_layer(_input: np.ndarray, weights_mat: np.ndarray, bias: np.ndarray) -> np.ndarray:
-	z = _input @ weights_mat
-	z += bias
-	return z
+	return _input @ weights_mat + bias
 
 
 def onehot(labels: np.ndarray, n_classes: int = 10):
