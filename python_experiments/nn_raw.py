@@ -43,14 +43,7 @@ def dot_prod(_a: np.ndarray, _b: np.ndarray) -> np.ndarray:
 def relu(x: float) -> float:
     return float(max(0, x))
 
-
-def apply_relu(_a: np.ndarray) -> np.ndarray:
-	for i in range(_a.shape[0]):
-		for j in range(_a.shape[1]):
-			_a[i, j] = relu(_a[i, j])
-	return _a
             
-
 def hidden_layer(_input: np.ndarray, weights_mat: np.ndarray, bias: np.ndarray) -> np.ndarray:
 	z = dot_prod(_input, weights_mat)
 	z += bias
