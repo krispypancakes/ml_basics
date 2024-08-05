@@ -3,6 +3,13 @@
 
 import numpy as np
 
+N_INPUT = 784
+N_HIDDEN_1 = 128
+# N_HIDDEN_2 = 20
+N_OUT = 10
+LR = 0.001
+
+
 def flatten(_imgs: np.ndarray) -> np.ndarray:
     images = []
     for img in _imgs:
@@ -17,28 +24,37 @@ def flatten(_imgs: np.ndarray) -> np.ndarray:
     return np.asarray(images)
 
 
+def outer(_a: np.ndarray, _b: np.ndarray) -> np.ndarray:
+	outer_prod = np.zeros((_a.shape[0], _b.shape[0]))
+	for i in range(_a.shape[0]):
+		for j in range(_b.shape[0]):
+			outer_prod[i,j] = _a[i] * _b[j]
+	return outer_prod			
+
+
+def dot_prod(_a: np.ndarray, _b: np.ndarray) -> np.ndarray:
+	dot_prod = np.zeros(_b.shape[1])
+	for i in range(_a.shape[0]):
+		for j in range(_b.shape[1]):
+			dot_prod[j] += _a[i] * _b[i,j]
+	return dot_prod
+
+
 def relu(x: float) -> float:
     return float(max(0, x))
 
 
-def hidden_layer(_input: np.ndarray, weights_mat: np.ndarray, bias: np.ndarray, last: bool = False) -> tuple[np.ndarray]:
-    n_input = weights_mat.shape[0]
-    n_output = weights_mat.shape[1]
-    z = np.zeros(n_input)
-    a = np.zeros(n_output)
+def apply_relu(_a: np.ndarray) -> np.ndarray:
+	for i in range(_a.shape[0]):
+		for j in range(_a.shape[1]):
+			_a[i, j] = relu(_a[i, j])
+	return _a
+            
 
-    for i in range(n_input):
-        for j in range(n_output):
-            z[j] += _input[i] * weights_mat[i,j]
-        z[j] += bias[j]
-
-    if not last:
-        for i in range(n_output):
-            a[i] = relu(z[i])
-    else:
-        a = softmax(z)
-
-    return z, a
+def hidden_layer(_input: np.ndarray, weights_mat: np.ndarray, bias: np.ndarray) -> np.ndarray:
+	z = dot_prod(_input, weights_mat)
+	z += bias
+	return z
 
 
 def onehot(label):
@@ -70,22 +86,31 @@ def cross_entropy_loss(pred: np.ndarray, target: np.ndarray) -> np.ndarray:
         L += target[i] * np.log(pred[i] + eps)
     return -L
 
-def backward_out(logits: np.ndarray, preds: np.ndarray, labels: np.ndarray) -> tuple[float]:
-    da = preds - labels
-    dz = da
-    dw = np.transpose(logits) * dz
+
+def backward_out(logits: np.ndarray, label: np.ndarray, activations: np.ndarray) -> tuple[np.ndarray]:
+    dz = logits - label
+    dw = outer(activations, dz)
     db = dz
     return dw, db
     
 
-def backward_hidden(inputs: np.ndarray, weights_prev: np.ndarray, dz_prev: np.ndarray) -> np.ndarray:
-    da = dz_prev * np.transpose(weights_prev)
-    dz = da
-    dw = np.transpose(inputs) * dz
+def backward_hidden(inputs: np.ndarray, weights_next: np.ndarray, dz_next: np.ndarray) -> tuple[np.ndarray]:
+    da = dot_prod(dz_next, np.transpose(weights_next))
+    dz = np.zeros_like(da)
+    for i in range(dz.shape[0]):
+        if da[i] > 0:
+            dz[i] = da[i]
+    dw = outer(inputs, dz)
     db = dz
     return dw, db
 
 
-def update(param: float, grad: float, lr: float) -> float:
-    return param - lr * grad
-
+def update(params: np.ndarray, grads: np.ndarray, lr: float) -> np.ndarray:
+    try:
+        for i in range(params.shape[0]):
+            for j in range(params.shape[1]):
+                params[i,j] = params[i,j] - lr * grads[i,j]
+    except IndexError:
+        for i in range(params.shape[0]):
+            params[i] = params[i] - lr * grads[i]
+    return params
