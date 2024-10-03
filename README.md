@@ -1,4 +1,4 @@
-# ml.c
+# ml_basics
 For fun, educational purposes and self-torture, I'm going to implement simple ML stuff in C. 
 First is obviously MNIST. Let's see if I will continue afterwards.
 An idea would also be to switch to C++ add cuda support.
